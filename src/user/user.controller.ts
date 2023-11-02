@@ -1,6 +1,7 @@
-import { Controller, Inject, Get } from '@nestjs/common';
+import { Controller, Inject, Get, Query } from '@nestjs/common';
 import { Routes, Services } from 'src/utils/path';
 import { IUserService } from './interfaces';
+import { TQueryGetAll } from 'src/utils/types';
 
 @Controller(Routes.USER)
 export class UserController {
@@ -9,7 +10,7 @@ export class UserController {
   ) {}
 
   @Get()
-  async GetAllUser() {
-    return await this.userService.getAll();
+  async GetAllUser(@Query() req: TQueryGetAll) {
+    return await this.userService.getAll(req);
   }
 }
