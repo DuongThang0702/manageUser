@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { AdmissionsList, UserDocument } from 'src/utils/schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { TQueryGetAll } from 'src/utils/types';
-
+import * as moment from 'moment';
 @Injectable()
 export class UserService implements IUserService {
   constructor(
@@ -14,8 +14,14 @@ export class UserService implements IUserService {
   async getAll(
     req: TQueryGetAll,
   ): Promise<{ counts: number; users: UserDocument[] }> {
+    const today = moment().startOf('day');
     const queryCommand = this.userModel
-      .find({ createdAt: { $eq: req.day ? req.day : new Date() } })
+      .find({
+        createdAt: {
+          $gte: today.toDate(),
+          $lte: moment(today).endOf('day').toDate(),
+        },
+      })
       .sort('-createdAt');
 
     const page = parseInt(req.page) || 1;
@@ -27,7 +33,12 @@ export class UserService implements IUserService {
       .exec()
       .then(async (rs) => {
         const counts = await this.userModel
-          .find({ createdAt: { $eq: req.day ? req.day : new Date() } })
+          .find({
+            createdAt: {
+              $gte: today.toDate(),
+              $lte: moment(today).endOf('day').toDate(),
+            },
+          })
           .countDocuments();
         return {
           counts,
