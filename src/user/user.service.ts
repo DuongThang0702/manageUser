@@ -15,14 +15,31 @@ export class UserService implements IUserService {
     req: TQueryGetAll,
   ): Promise<{ counts: number; users: UserDocument[] }> {
     const today = moment().startOf('day');
-    const queryCommand = this.userModel
-      .find({
-        createdAt: {
-          $gte: today.toDate(),
-          $lte: moment(today).endOf('day').toDate(),
-        },
-      })
-      .sort('-createdAt');
+    let queryCommand;
+
+    let start = new Date(req.day);
+    start.setHours(0, 0, 0, 0);
+    let end = new Date(req.day);
+    end.setHours(23, 59, 59, 999);
+    if (req.day) {
+      queryCommand = this.userModel
+        .find({
+          createdAt: {
+            $gte: start,
+            $lte: end,
+          },
+        })
+        .sort('-createdAt');
+    } else {
+      queryCommand = this.userModel
+        .find({
+          createdAt: {
+            $gte: today.toDate(),
+            $lte: moment(today).endOf('day').toDate(),
+          },
+        })
+        .sort('-createdAt');
+    }
 
     const page = parseInt(req.page) || 1;
     const limit = parseInt(req.limit) || parseInt(process.env.LIMIT);
@@ -33,12 +50,21 @@ export class UserService implements IUserService {
       .exec()
       .then(async (rs) => {
         const counts = await this.userModel
-          .find({
-            createdAt: {
-              $gte: today.toDate(),
-              $lte: moment(today).endOf('day').toDate(),
-            },
-          })
+          .find(
+            req.day
+              ? {
+                  createdAt: {
+                    $gte: start,
+                    $lte: end,
+                  },
+                }
+              : {
+                  createdAt: {
+                    $gte: today.toDate(),
+                    $lte: moment(today).endOf('day').toDate(),
+                  },
+                },
+          )
           .countDocuments();
         return {
           counts,
