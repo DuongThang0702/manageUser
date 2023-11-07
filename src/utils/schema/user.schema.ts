@@ -7,14 +7,22 @@ export type UserDocument = HydratedDocument<AdmissionsList>;
   collection: 'AdmissionsList',
 })
 export class AdmissionsList {
-  @Prop()
+  @Prop({ unique: true })
   username: string;
+  @Prop({ unique: true })
+  email: string;
   @Prop()
   hoTen: string;
   @Prop()
   heDaoTao: string;
   @Prop()
   nganhHoc: string;
+  @Prop()
+  sdt: string;
+  @Prop()
+  password: string;
+  @Prop()
+  role: string;
 }
 
 export const AdmissionsListSchema =
