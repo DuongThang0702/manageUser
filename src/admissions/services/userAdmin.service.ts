@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { IAdmissionService } from '../interfaces';
-import { Model } from 'mongoose';
+import { Document, Model, Types } from 'mongoose';
 import { AdmissionsDocument, Admissions } from 'src/utils/schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { TQueryGetAll } from 'src/utils/types';
 import * as moment from 'moment';
+import { CreateAdmission } from '../dtos';
 
 @Injectable()
 export class AdmissionService implements IAdmissionService {
@@ -12,6 +13,19 @@ export class AdmissionService implements IAdmissionService {
     @InjectModel(Admissions.name)
     private readonly admissionModel: Model<Admissions>,
   ) {}
+  async createAdmission(data: CreateAdmission): Promise<AdmissionsDocument> {
+    const matchUser = await this.admissionModel.findOne({ sdt: data.sdt });
+    if (matchUser)
+      throw new HttpException(
+        'phone has already exist',
+        HttpStatus.BAD_REQUEST,
+      );
+    const newAdmission = new this.admissionModel({ ...data });
+    const response = await newAdmission.save();
+    if (response === null)
+      throw new HttpException('Something went wrong', HttpStatus.BAD_REQUEST);
+    else return response;
+  }
 
   async getAll(
     req: TQueryGetAll,

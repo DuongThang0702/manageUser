@@ -5,4 +5,6 @@ export interface IAdmissionService {
   getAll(
     req: TQueryGetAll,
   ): Promise<{ counts: number; users: AdmissionsDocument[] }>;
+
+  createAdmission(data: any): Promise<AdmissionsDocument>;
 }

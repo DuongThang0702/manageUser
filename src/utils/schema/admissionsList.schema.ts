@@ -11,10 +11,12 @@ export class Admissions {
   @Prop()
   hoTen: string;
   @Prop()
+  email: string;
+  @Prop()
   heDaoTao: string;
   @Prop()
   nganhHoc: string[];
-  @Prop()
+  @Prop({ unique: true })
   sdt: string;
 }
 
