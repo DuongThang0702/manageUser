@@ -5,6 +5,7 @@ export type UserDocument = HydratedDocument<AdmissionsList>;
 
 @Schema({
   collection: 'AdmissionsList',
+  timestamps: true,
 })
 export class AdmissionsList {
   @Prop({ unique: true })
