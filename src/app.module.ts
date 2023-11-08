@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { UserModule } from './user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserService } from './user/services/user.service';
 import { AuthModule } from './auth/auth.module';
+import { AdmissionsModule } from './admissions/admissions.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -12,9 +12,9 @@ import { AuthModule } from './auth/auth.module';
       envFilePath: ['.env', '.env.local', '.env.product'],
     }),
     MongooseModule.forRoot(process.env.URL_CONNECT),
-    UserModule,
+    AdmissionsModule,
     AuthModule,
+    UserModule,
   ],
-  providers: [UserService],
 })
 export class AppModule {}

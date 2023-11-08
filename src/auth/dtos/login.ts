@@ -14,10 +14,6 @@ export class LoginSucess {
   @Expose()
   hoTen: string;
   @Expose()
-  heDaoTao: string;
-  @Expose()
-  nganhHoc: string;
-  @Expose()
   role: string;
   @Expose()
   sdt: string;
