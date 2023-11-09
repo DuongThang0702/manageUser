@@ -75,7 +75,7 @@ export class UserService implements IUserService {
       await this.mailerService.sendMail({
         to: response.email,
         subject: 'Send your Password',
-        template: './sendpassword',
+        template: './sendPassword',
         context: {
           name: response.hoTen,
           password: response.password,
