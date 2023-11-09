@@ -7,6 +7,7 @@ import {
   Req,
   Param,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { Routes, Services } from 'src/utils/path';
 import { IUserService } from './interfaces/interface';
@@ -34,5 +35,10 @@ export class UserController {
     @Body() data: UpdateUserByAdminDto,
   ) {
     return await this.userService.updateUserByAdmin(params.id, data);
+  }
+
+  @Delete(':uid')
+  async deleteUser(@Param() param: { uid: string }) {
+    return await this.userService.deleteUser(param.uid);
   }
 }

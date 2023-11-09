@@ -16,4 +16,5 @@ export interface IUserService {
     counts: number;
     users: UserDocument[];
   }>;
+  deleteUser(uid: string): Promise<UserDocument>;
 }

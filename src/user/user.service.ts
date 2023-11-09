@@ -10,12 +10,14 @@ import {
   UpdateUserByAdminDto,
 } from 'src/utils/types';
 import { Role } from 'src/utils/contants';
+import { MailerService } from '@nestjs-modules/mailer';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class UserService implements IUserService {
   constructor(
     @InjectModel(User.name) private readonly userModal: Model<User>,
+    private readonly mailerService: MailerService,
   ) {}
   getAllUser(req: TQueryGetAll): Promise<{
     counts: number;
@@ -69,6 +71,21 @@ export class UserService implements IUserService {
     const response = await newUser.save();
     if (response === null)
       throw new HttpException('Something went wrong', HttpStatus.BAD_REQUEST);
-    else return response;
+    else {
+      await this.mailerService.sendMail({
+        to: response.email,
+        subject: 'Send your Password',
+        template: './sendpassword',
+        context: {
+          name: response.hoTen,
+          password: response.password,
+        },
+      });
+      return response;
+    }
+  }
+
+  async deleteUser(uid: string) {
+    return await this.userModal.findByIdAndDelete(uid);
   }
 }
