@@ -4,7 +4,7 @@ import { HydratedDocument } from 'mongoose';
 export type AdmissionsDocument = HydratedDocument<Admissions>;
 
 @Schema({
-  collection: 'AdmissionsList',
+  collection: 'Admissions',
   timestamps: true,
 })
 export class Admissions {
