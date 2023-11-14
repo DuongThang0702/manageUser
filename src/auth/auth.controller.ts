@@ -6,6 +6,8 @@ import {
   Body,
   Inject,
   Get,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { Routes, Services } from 'src/utils/path';
 import { LocalAuthGuard } from './guards';
@@ -25,7 +27,16 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() payload: Login) {
-    return await this.authService.validateUser(payload.email, payload.password);
+    const response = await this.authService.validateUser(
+      payload.email,
+      payload.password,
+    );
+    if (response === null)
+      throw new HttpException(
+        'wrong password or email',
+        HttpStatus.BAD_REQUEST,
+      );
+    else return response;
   }
 
   @Post('register')
